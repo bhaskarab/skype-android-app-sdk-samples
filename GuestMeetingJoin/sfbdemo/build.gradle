@@ -50,6 +50,7 @@ android {
         jumboMode = true
         javaMaxHeapSize "4g"
     }
+    buildToolsVersion '25.0.0'
 }
 
 dependencies {
