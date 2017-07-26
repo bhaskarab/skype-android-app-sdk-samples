@@ -2,10 +2,12 @@ package com.microsoft.office.sfb.sfbdemo;
 
 import android.app.Activity;
 import android.graphics.SurfaceTexture;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.os.ParcelFileDescriptor;
 import android.view.LayoutInflater;
 import android.view.TextureView;
 import android.view.View;
@@ -22,9 +24,13 @@ import com.microsoft.office.sfb.appsdk.VideoService;
 import com.microsoft.office.sfb.appsdk.DevicesManager;
 import com.microsoft.office.sfb.appsdk.Camera;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import android.widget.Button;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 /**
  * The video fragment shows the local participant video preview and
@@ -201,6 +207,8 @@ public class VideoFragment extends Fragment{
             }
         });
 
+
+        ((TextView)rootView.findViewById(R.id.sttv)).setText("lollllllllllllll");
         // Setup the Incoming Video View
         // Note:
         // The only reason we have created a VideoStreamSurfaceListener is so that we can
@@ -209,6 +217,36 @@ public class VideoFragment extends Fragment{
         this.mmvrSurface = (MMVRSurfaceView)rootView.findViewById(R.id.mmvrSurfaceViewId);
         this.mmvrSurface.setCallback(new VideoStreamSurfaceListener(this));
 
+
+
+        try {
+            ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+            ParcelFileDescriptor[] descriptors = ParcelFileDescriptor.createPipe();
+            ParcelFileDescriptor parcelRead = new ParcelFileDescriptor(descriptors[0]);
+            ParcelFileDescriptor parcelWrite = new ParcelFileDescriptor(descriptors[1]);
+
+            InputStream inputStream = new ParcelFileDescriptor.AutoCloseInputStream(parcelRead);
+
+            MediaRecorder recorder = new MediaRecorder();
+            recorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            recorder.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB);
+            recorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            recorder.setOutputFile(parcelWrite.getFileDescriptor());
+            recorder.prepare();
+            recorder.start();
+
+
+        int read;
+        byte[] data = new byte[16384];
+
+        while ((read = inputStream.read(data, 0, data.length)) != -1) {
+            byteArrayOutputStream.write(data, 0, read);
+        }
+
+        byteArrayOutputStream.flush();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         // Sample e.g. below to dynamically create the MMVRView.
         //this.mmvrSurface = new MMVRSurfaceView(this.participantVideoLayout.getContext());
         // Add view to layout.

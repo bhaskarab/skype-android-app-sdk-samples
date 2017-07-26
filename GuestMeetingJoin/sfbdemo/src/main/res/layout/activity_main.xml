@@ -24,19 +24,20 @@
         android:layout_centerHorizontal="true" />
 
     <EditText
+        android:id="@+id/meetingUriEditTextId"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/meetingUriEditTextId"
-        android:layout_below="@+id/displayNameEditTextId"
-        android:layout_marginTop="36dp"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:layout_alignParentStart="true"
-        android:singleLine="true"
+        android:layout_below="@+id/displayNameEditTextId"
+        android:layout_marginTop="36dp"
         android:focusable="true"
+        android:hint="Meeting URI"
         android:imeOptions="actionDone"
-        android:hint="Meeting URI" />
+        android:singleLine="true"
+        android:text="https://join.microsoft.com/meet/kashaik/2MVOQ82A" />
 
     <TextView
         android:layout_width="wrap_content"
